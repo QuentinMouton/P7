@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken')
 
 const User = require('../models/User.model')
 
+require('dotenv').config()
+
 exports.signUp = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
@@ -32,7 +34,7 @@ exports.login = (req, res, next) => {
                         userId: user._id,
                         token: jwt.sign(
                             { userId: user._id },
-                            '36?8CkUcikg7dLY?stj75AjKskcUhWBFz8V8ad8DEF=NcaoRaBNn6WnpD7d4V-LS!LH6lkP9=-klaLp!7buyX1Okq3hwItTZkmOdeuRj8gN3PiLdcmaB3Ft6YRv==b5Qai/LlYynkNMClKNOV0kpK!rT5OmAPahFSbSKIRwI!i67YjElXP!Nx6V3nAy0SN8xikrzamV3kJZsq/f9o5trdBi!sRkFwyiMT6GoYOSAWS4sRXTHFTiUdn/B3WsXS-EA',
+                            process.env.TOKEN,
                             { expiresIn: '24h' }
                         )
                     })
