@@ -1,18 +1,19 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/user.routes')
+const bookRoutes = require('./routes/book.routes')
 
+const path = require('path');
 const app = express()
 
-async function main() {
-    await mongoose.connect('mongodb+srv://admin:Uo^SSzPLFA*9URj6Fut$J3o$3XeUkEa$N9k$aJwu@atlascluster.ajujwk7.mongodb.net/?retryWrites=true&w=majority',
-    { useNewUrlParser: true,
-        useUnifiedTopology: true 
-    })
-    .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(() => console.log('Connexion à MongoDB échouée !'));
-}
-main()
+require('dotenv').config()
+
+mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@atlascluster.ajujwk7.mongodb.net/?retryWrites=true&w=majority`,
+{ useNewUrlParser: true,
+    useUnifiedTopology: true 
+})
+.then(() => console.log('Connexion à MongoDB réussie !'))
+.catch(() => console.log('Connexion à MongoDB échouée !'));
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -22,5 +23,7 @@ app.use((req, res, next) => {
 });
 app.use(express.json())
 app.use('/api/auth', userRoutes)
+app.use('/api/books', bookRoutes)
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 module.exports = app;
