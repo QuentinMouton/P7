@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 
 require('dotenv').config()
 
+//Vérification de l'authenticité du token
 module.exports = (req, res, next) => {
     try{
         const token = req.headers.authorization.split(' ')[1]
@@ -11,8 +12,7 @@ module.exports = (req, res, next) => {
             userId: userId
         }
         next()
-    } catch(error){
-        res.status(403).json({ error })
+    } catch(err){
+        res.status(403).json({ err })
     }
-
 }

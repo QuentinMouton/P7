@@ -1,6 +1,8 @@
 const sharp = require('sharp')
 const fs = require('fs')
 
+//Optimise les images en les redimensionnant et le convertissant puis supprime
+//les images d'origines et enregistre la nouvelle 
 const optimizedImg = async (req, res, next) => {
     try{
         await sharp(req.file.path)
@@ -15,8 +17,8 @@ const optimizedImg = async (req, res, next) => {
                 }
             })
         next()
-    } catch (error){
-        error => res.status(500).json({ error })
+    } catch (err){
+        err => res.status(500).json({ err })
     }
 
 }

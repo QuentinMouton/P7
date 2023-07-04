@@ -6,6 +6,7 @@ const MIME_TYPES = {
     'image/png': 'png'
 }
 
+//Donne la destination de l'image et remplace les espaces par "_"
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
         callback(null, 'images')
@@ -15,7 +16,7 @@ const storage = multer.diskStorage({
         const title = bookObject.title
         const name = title.split(' ').join('_')
         const extension = MIME_TYPES[file.mimetype]
-        callback(null, name + '_' + Date.now() + '.' + extension)
+        callback(null, name + '_' + Date.now() + extension)
     }
 })
 
