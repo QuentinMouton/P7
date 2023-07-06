@@ -7,13 +7,13 @@ require('dotenv').config()
 
 //Requête pour créer un utilisateur
 exports.signUp = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10)
+    bcrypt.hash(req.body.password, 10) //Hachage du mot de passe, 10 tours de chiffrements
     .then(hash => {
-        const user = new User ({
+        const user = new User ({ //Création d'une nouvelle instance du modèle User
             email: req.body.email,
             password: hash
         })
-        user.save()
+        user.save() //Enregistre le nouvel utilisateur dans la base de données
         .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
         .catch(error => res.status(400).json({ error }))
     })
@@ -21,28 +21,28 @@ exports.signUp = (req, res, next) => {
 }
 //Requête pour connecter l'utilisateur à son compte
 exports.login = (req, res, next) => {
-    User.findOne({email: req.body.email})
+    User.findOne({email: req.body.email}) //Cherche l'utilisateur
     .then(user => {
-        if (user === null){
+        if (user === null){ //Si utilisateur inexistant 
             res.status(401).json({ message: 'Identifiant ou mot de passe incorrecte'})
         } else {
-            bcrypt.compare(req.body.password, user.password)
+            bcrypt.compare(req.body.password, user.password) //Compare le mot de passe envoyé et celui stocké 
             .then(valid => {
-                if (!valid){
+                if (!valid){ //Si promesse non valide
                     res.status(401).json({ message: 'Identifiant ou mot de passe incorrecte'})
                 } else {
-                    res.status(200).json({
+                    res.status(200).json({ //Renvoi un objet JSON contenant l'identifiant du user et un token d'authentification 
                         userId: user._id,
-                        token: jwt.sign(
+                        token: jwt.sign( //Création du token grace à l'id + clé secrète
                             { userId: user._id },
                             process.env.TOKEN,
-                            { expiresIn: '4h' }
+                            { expiresIn: '4h' } //Le token expire au bout de 4h
                         )
                     })
                 }
             })
-            .catch(error => res.status(500).json({ error }))
+            .catch(err => res.status(500).json({ err }))
         }
     })
-    .catch(error => res.status(400).json({ error }))
+    .catch(err => res.status(400).json({ err }))
 }
